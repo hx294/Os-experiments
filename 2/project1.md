@@ -16,11 +16,17 @@
 
 ## 三、  实验过程
 
-打开源文件，读取数据，拷贝到目标文件，最后在屏幕输出文件内容。
+打开源文件，读取数据，循环读取，拷贝到目标文件，最后在屏幕输出文件内容。要求在发生错误时，能够反馈一些信息：当源文件不存在；当目标文件存在，是否进行覆盖。
 
 ## 四、  实验结果与分析
 
-### 输出结果
+### 输出结果1
+
+这个结果是源文件和目标文件存在，并对目标文件进行覆盖。
+
+**openat(AT_FDCWD, "b", O_WRONLY|O_CREAT|O_EXCL, 0644) = -1 EEXIST (File exists)** 用了O_CREAT和O_EXCL参数,在文件存在时会返回-1.
+
+**openat(AT_FDCWD, "b", O_WRONLY|O_CREAT|O_TRUNC, 0644) = 4** 如果选择了覆盖文件，就会执行这句，这句用了O_TRUNC,直接进行覆盖。
 
 ```
 ☺  strace ./copy_file
@@ -125,7 +131,11 @@ exit_group(0)                           = ?
 +++ exited with 0 +++
 ```
 
-### 分析
+对应的输出：
+
+![image-20240328104154507](C:\Users\1\AppData\Roaming\Typora\typora-user-images\image-20240328104154507.png)
+
+#### 分析
 
 brk() 改变数据段的结尾位置。
 
@@ -151,7 +161,7 @@ munmap():取消相应地址的映射
 
 getrandom():获取随机数字
 
-scanf对应read，puts对应write
+scanf对应read，puts，printf对应write
 
 open对应openat
 
@@ -168,6 +178,8 @@ openat()和open()区别：
 主要区别在于 `openat()` 可以相对于任意目录打开文件，而 `open()` 只能相对于当前工作目录打开文件。
 
 ## 六、  源代码
+
+代码先要求输入两个文件名字，然后对源文件和目标文件的存在性进行判断，并进行相应操作。open相关的参数的使用参考[open(2) - Linux manual page (man7.org)](https://man7.org/linux/man-pages/man2/open.2.html)。
 
 ```C
 #include<stdio.h>
@@ -238,7 +250,7 @@ int main(){
         }
         close(fd2);
 
-        mark = lseek(fd1, 0, SEEK_SET);
+        mark = lseek(fd1, 0, SEEK_SET);//将偏移重置
         if(mark == -1){
                 puts("Error seeking file");
                 exit(0);
