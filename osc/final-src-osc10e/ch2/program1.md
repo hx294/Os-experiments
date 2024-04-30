@@ -1,5 +1,7 @@
 # program 1
 
+从官网[Operating System Concepts - 10th edition (os-book.com)](https://www.os-book.com/OS10/index.html)下载相应的环境
+
 ## 1 加载和删除内核模块：simple
 
 加载内核模块

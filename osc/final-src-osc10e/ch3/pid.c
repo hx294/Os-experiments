@@ -28,6 +28,7 @@ static ssize_t proc_write(struct file *file, const char __user *usr_buf, size_t 
 static struct file_operations proc_ops = {
         .owner = THIS_MODULE,
         .read = proc_read,
+	.write = proc_write,
 };
 
 /* This function is called when the module is loaded. */
@@ -72,6 +73,15 @@ static ssize_t proc_read(struct file *file, char __user *usr_buf, size_t count, 
 
         tsk = pid_task(find_vpid(l_pid), PIDTYPE_PID);
 
+	if(tsk == NULL){
+		printk(KERN_INFO "Invalid Pid %d!",l_pid);
+		return 0;
+	}
+	
+	rv = sprintf(buffer,"command = [%s] pid = [%ld] state = [%ld]\n",
+	tsk->comm,l_pid,tsk->state);
+
+
         completed = 1;
 
         // copies the contents of kernel buffer to userspace usr_buf 
@@ -104,6 +114,9 @@ static ssize_t proc_write(struct file *file, const char __user *usr_buf, size_t 
 	 * 
 	 * sscanf() must be used instead.
 	 */
+	sscanf(k_mem,"%ld",&l_pid);
+	
+	printk( KERN_INFO "Set current PID to %d\n",l_pid);
 
         kfree(k_mem);
 

@@ -40,6 +40,7 @@ int main(void)
 
 	if (pid > 0) {  /* parent process */
 		/* close the unused end of the pipe */
+		sleep(5);
 		close(fd[READ_END]);
 
 		/* write to the pipe */

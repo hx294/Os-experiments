@@ -1,0 +1,1 @@
+cmd_/home/osc/final-src-osc10e/ch3/pid.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/osc/final-src-osc10e/ch3/pid.ko /home/osc/final-src-osc10e/ch3/pid.o /home/osc/final-src-osc10e/ch3/pid.mod.o

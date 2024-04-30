@@ -1,0 +1,4 @@
+history	 4 history
+	 3 ./test
+	 2 ./text
+	 1 ls
